@@ -54,7 +54,7 @@ router.post("/",checkAuth,async(req,res)=>{
 
 const query = ["name", "email", "mobile_number", "college"];       //query params available for filtering
 
-router.get("/user",checkAuth,SF_Pag(Candidate, query), async(req, res)=>{
+router.get("/user",checkAuth,SF_Pag(Shortcut, query), async(req, res)=>{
     
     try{
 

@@ -7,6 +7,8 @@ var mongoose = require("mongoose")
 
 
 var config = require("./config/default.json")
+var UsersRouter = require("./routes/users");
+var ShortcutRouter = require("./routes/shortcuts")
 
 
 var app = express();
@@ -26,6 +28,8 @@ mongoose.connect(config.MONGO_URL,{useNewUrlParser: true, useUnifiedTopology: tr
         console.log("Mongo Connection Established");
     }
 });
+app.use("/users",UsersRouter);
+app.use("/shortcuts",ShortcutRouter);
 
 app.get("/",(req,res)=>{
     res.send("Hello Oslash")

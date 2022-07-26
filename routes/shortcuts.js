@@ -4,6 +4,7 @@ var mongoose = require("mongoose")
 
 var jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
+var SF_Pag = require("../middlewares/Search_functionality-Pagination");
 
 var User = require("../models/user");
 var Shortcut = require("../models/shortcut")
@@ -51,7 +52,9 @@ router.post("/",checkAuth,async(req,res)=>{
     } 
 });
 
-router.get("/user",checkAuth, async(req, res)=>{
+const query = ["name", "email", "mobile_number", "college"];       //query params available for filtering
+
+router.get("/user",checkAuth,SF_Pag(Candidate, query), async(req, res)=>{
     
     try{
 

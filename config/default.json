@@ -1,0 +1,6 @@
+{
+    "MONGO_ATLAS_PW" : "Oslash",
+    "MONGO_ATLAS_USER" : "Saiganesh",
+    "MONGO_URL" : "mongodb+srv://Saiganesh:Oslash@cluster0.upizt28.mongodb.net/?retryWrites=true&w=majority"
+
+}

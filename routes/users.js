@@ -44,7 +44,7 @@ router.post("/signin",User_validator(), async(req, res, next)=>{
                 "status": {
                     "success": false,
                     "code": 401,
-                    "message": constants.AUTHORIZATION_FAILED
+                    "message": constants.EMAIL_EXIST
                 }
             });
         }

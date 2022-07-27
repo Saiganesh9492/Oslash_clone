@@ -3,10 +3,6 @@ const { check } = require("express-validator");
 
 var Shorcut =  require("../../models/shortcut")
 
-console.log("in shortcut validator")
-
-
-
 module.exports = function shortcut_validator() {
     return [
         check("short_link")

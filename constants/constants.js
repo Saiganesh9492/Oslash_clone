@@ -33,9 +33,6 @@ module.exports = function constants(model){
         //Authorization Succesful (Status Code: 200) :
         AUTHORIZATION_SUCCESFUL: "authorization Succesful",
 
-        //CSV data import (Status Code: 200) :
-        CSV_DATA_IMPORT: "request successful, imported csv data to mongoDb",
-
         //email sent (Status Code: 200) :
         EMAIL_SENT: "email sent successfully",
 
@@ -46,13 +43,7 @@ module.exports = function constants(model){
         EMAIL_CANNOT_VERIFIED: "Cannot Verify Email Adress",
 
         //email verified (Status Code: 200) :
-        EMAIL_VERIFIED: "request successful, Email Verified succesfully",
-
-        //Password changed (Status Code: 200) :
-        PASSWORD_CHANGED_SUCCESFULLY: "password changed successfully",
-
-        //Password changed (Status Code: 400) :
-        PASSWORD_NOT_MATCH: "password changed successfully"
+        EMAIL_VERIFIED: "request successful, Email Verified succesfully"
     };
 
     return constants;

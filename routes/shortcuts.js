@@ -12,7 +12,7 @@ var Shortcut = require("../models/shortcut")
 
 var config = require("../config/default.json");
 var constants_function = require("../constants/constants");
-var constants = constants_function("user");
+var constants = constants_function("shortcut");
 var user_email_verfication = require("../middleware/emails/user-email_verification");
 const checkAuth = require("../middleware/check-auth");
 
@@ -43,6 +43,52 @@ router.post("/",Shortcut_validator(),checkAuth,async(req,res)=>{
 
     var arr = Shortcut.find({user_id : user.id})
     var sl_array = (await arr).map(x=>x.short_link)
+    var tagsCreated = [];
+
+    if(tags)
+    {
+        for(let i=0;i<tags.length;i++)
+    {
+        if(sl_array.includes(tags[i]))
+        {
+            return res.status(400).json({
+                "status" : {
+                    "success" : false,
+                    "code" : 400,
+                    "message" : "cannot create tag as already shortlink exist with it name"
+    
+                }
+            })
+
+        }
+        else{
+            const new_shortcut =  new Shortcut({
+                _id : new mongoose.Types.ObjectId(),
+                user_id : user._id,
+                short_link : short_link,
+                description : description,
+                url : url,
+                tags : tags[i]
+            })
+        
+            await new_shortcut.save()
+            tagsCreated.push(tags[i])
+
+        }
+    }
+    res.status(201).json({
+        "status":{
+            "success" : true,
+            "code" : 201,
+            "message" : constants.MODEL_CREATE 
+        },
+        "data" : tagsCreated
+    })
+
+
+    }
+
+    
     
     if(sl_array.includes(short_link))
     {
@@ -50,7 +96,7 @@ router.post("/",Shortcut_validator(),checkAuth,async(req,res)=>{
             "status" : {
                 "success" : false,
                 "code" : 400,
-                "message" : "cannot create shortlink"
+                "message" : "cannot create duplicate shortlink"
 
             }
         })
@@ -68,7 +114,12 @@ router.post("/",Shortcut_validator(),checkAuth,async(req,res)=>{
     })
 
     await new_shortcut.save()
-    res.send({
+    res.status(201).json({
+        "status":{
+            "success" : true,
+            "code" : 201,
+            "message" : constants.MODEL_CREATE 
+        },
         "data" : new_shortcut
     })
 
@@ -116,6 +167,53 @@ router.get("/user",checkAuth,SF_Pag(Shortcut, query), async(req, res)=>{
             }
         });
         console.log("97",err.message);
+    }
+});
+
+
+router.delete("/:shortcut_id", checkAuth, async(req, res)=>{
+    
+    try{
+
+        //Finding shortcut by ID :
+        const id = req.params.shortcut_id;
+        const shortcut = await Shortcut.findById(id);
+        console.log("135 shortcuts",shortcut)
+
+        if (shortcut == null) {
+
+            //Response if shortcut not found :
+            res.status(400).json({
+                "status": {
+                    "success": false,
+                    "code": 400,
+                    "message": constants.MODEL_NOT_FOUND
+                }
+            });
+        } else {
+
+            await Shortcut.deleteOne({_id: id});
+
+            //Response :
+            res.status(200).json({
+                "status": {
+                    "success": true,
+                    "code": 200,
+                    "message": constants.MODEL_DELETE
+                }
+            });
+        }
+
+    //Error Catching :
+    }catch(err){
+        res.status(400).json({
+            "status": {
+                "success": false,
+                "code": 400,
+                "message": err.message
+            }
+        });
+        console.log(err);
     }
 });
 

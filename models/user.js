@@ -8,7 +8,16 @@ var userSchema = mongoose.Schema({
     email: {
         type: String,
         unique: [true, "Email already exists"],
-        required: [true, "Please enter Email Address"]
+        required: [true, "Please enter Email Address"],
+        validate: [
+            {
+                validator: function(v) {
+                    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
+                },
+                Error: "Please enter a valid Email Address"
+            }
+            
+        ]
        
     }
 });

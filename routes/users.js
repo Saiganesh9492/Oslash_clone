@@ -13,9 +13,24 @@ var constants_function = require("../constants/constants");
 var constants = constants_function("user");
 var user_email_verfication = require("../middleware/emails/user-email_verification");
 const checkAuth = require("../middleware/check-auth");
+var User_validator = require("../middleware/validations/User_validator")
 
 
-router.post("/signin", async(req, res, next)=>{
+router.post("/signin",User_validator(), async(req, res, next)=>{
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+
+        //Respose for Validation Error :
+        console.log(errors.array());
+        return res.status(422).json({
+            "status": {
+                "success": false,
+                "code": 422,
+                "message": errors.array()[0].msg
+            }
+        });
+    }
 
     try {
 
@@ -35,18 +50,16 @@ router.post("/signin", async(req, res, next)=>{
         }
         else
         {
-
-                        const url = req.protocol + "://" + req.get("host") + "/users/verify/"; 
-                        user_email_verfication(email,url);
-                        res.status(250).json({
-                            "status" : {
-                                "success" : true,
-                                "code" : 250,
-                                "message" : "Email sent successfully"
-                            }
-                        })
-
-        }
+              const url = req.protocol + "://" + req.get("host") + "/users/verify/"; 
+               user_email_verfication(email,url);
+                res.status(250).json({
+                    "status" : {
+                        "success" : true,
+                        "code" : 250,
+                        "message" : "Email sent successfully"
+                    }
+                 })
+                 }
 
         //Error Catching :
     } catch (err) {

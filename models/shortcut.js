@@ -24,7 +24,17 @@ var shortcutsSchema = mongoose.Schema({
     url :{
         type : String,
         unique : [false],
-        required : [true,"Please enter URl"]
+        required : [true,"Please enter URl"],
+        validate :[
+            {
+            validator: function(v) {
+                var regexQuery = "/(http(s)?://.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/";
+                var url = new RegExp(regexQuery,"g");
+                 return url.test(v);
+                 },
+              Error: "Please enter valid URL"
+            }
+        ]
     },
     tags : {
         type : String,

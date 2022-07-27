@@ -5,6 +5,7 @@ var mongoose = require("mongoose")
 var jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 var SF_Pag = require("../middleware/Search_functionality-pagination");
+var Shortcut_validator = require("../middleware/validations/shortcut_validator")
 
 var User = require("../models/user");
 var Shortcut = require("../models/shortcut")
@@ -15,9 +16,24 @@ var constants = constants_function("user");
 var user_email_verfication = require("../middleware/emails/user-email_verification");
 const checkAuth = require("../middleware/check-auth");
 
-router.post("/",checkAuth,async(req,res)=>{
+router.post("/",Shortcut_validator(),checkAuth,async(req,res)=>{
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+
+        //Respose for Validation Error :
+        console.log(errors.array());
+        return res.status(422).json({
+            "status": {
+                "success": false,
+                "code": 422,
+                "message": errors.array()[0].msg
+            }
+        });
+    }
 
     try {
+        
         const {short_link,description,url,tags} = req.body;
 
     const email = req.user.email;

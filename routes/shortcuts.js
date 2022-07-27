@@ -43,50 +43,6 @@ router.post("/",Shortcut_validator(),checkAuth,async(req,res)=>{
 
     var arr = Shortcut.find({user_id : user.id})
     var sl_array = (await arr).map(x=>x.short_link)
-    var tagsCreated = [];
-
-    if(tags)
-    {
-        for(let i=0;i<tags.length;i++)
-    {
-        if(sl_array.includes(tags[i]))
-        {
-            return res.status(400).json({
-                "status" : {
-                    "success" : false,
-                    "code" : 400,
-                    "message" : "cannot create tag as already shortlink exist with it name"
-    
-                }
-            })
-
-        }
-        else{
-            const new_shortcut =  new Shortcut({
-                _id : new mongoose.Types.ObjectId(),
-                user_id : user._id,
-                short_link : short_link,
-                description : description,
-                url : url,
-                tags : tags[i]
-            })
-        
-            await new_shortcut.save()
-            tagsCreated.push(tags[i])
-
-        }
-    }
-    res.status(201).json({
-        "status":{
-            "success" : true,
-            "code" : 201,
-            "message" : constants.MODEL_CREATE 
-        },
-        "data" : tagsCreated
-    })
-
-
-    }
 
     
     
@@ -260,16 +216,6 @@ router.get("/search",checkAuth,async(req,res)=>{
     }
 
      
-})
-
-router.get("/sort",checkAuth,async(req,res)=>{
-
-    const {attribute,value,order} = req.body;
-
-    var result = await Shortcut.find({attribute : value}).sort({vote: order})
-
-    
-
 })
 
 

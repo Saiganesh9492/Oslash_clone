@@ -15,6 +15,7 @@ module.exports = async(req, res,next)=>{
     try {
 
         //Verifying the Token :
+        // console.log("check auth 18",req.headers.authorization)
         const token = await req.headers.authorization.split(" ")[1];
         const decoded = await jwt.verify(token, config.ADMIN_JWT_KEY);
 

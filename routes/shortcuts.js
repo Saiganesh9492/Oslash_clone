@@ -218,6 +218,61 @@ router.delete("/:shortcut_id", checkAuth, async(req, res)=>{
 });
 
 
+router.get("/search",checkAuth,async(req,res)=>{
+    try {
+        const {attribute,value} = req.body;
+
+    const result = await Shortcut.find({attribute : value})
+
+    if(result)
+    {
+        res.status(200).json({
+            "status": {
+                "success": true,
+                "code": 200,
+                "message": constants.SUCCESSFUL
+            },
+            "data": result
+        });
+
+    }
+    else
+    {
+        res.status(400).json({
+            "status" : {
+                "success" : true,
+                "code" : 400,
+                "message" : "Not Found"
+            }
+        })
+    }
+        
+    } catch (err) {
+        res.status(400).json({
+            "status": {
+                "success": false,
+                "code": 400,
+                "message": err.message
+            }
+        });
+        console.log("97",err.message);
+        
+    }
+
+     
+})
+
+router.get("/sort",checkAuth,async(req,res)=>{
+
+    const {attribute,value,order} = req.body;
+
+    var result = await Shortcut.find({attribute : value}).sort({vote: order})
+
+    
+
+})
+
+
 
 
 module.exports=router;

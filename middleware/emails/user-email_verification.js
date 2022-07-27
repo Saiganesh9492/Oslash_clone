@@ -33,6 +33,7 @@ module.exports = function ( email ,url){
     );
 
     //Verification URL :
+    console.log("token from user-email-verification",token)
     const link = url+token;
     
     //Email Details :

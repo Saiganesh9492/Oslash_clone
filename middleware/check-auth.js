@@ -6,6 +6,7 @@ var config = require("../config/default.json");
 //Importing Constants :
 var constants_function = require("../constants/constants");
 var constants = constants_function();
+var User = require("../models/user")
 
 
 
@@ -16,8 +17,14 @@ module.exports = async(req, res,next)=>{
         //Verifying the Token :
         const token = await req.headers.authorization.split(" ")[1];
         const decoded = await jwt.verify(token, config.ADMIN_JWT_KEY);
-        req.user = decoded;
-        // console.log(req.user)
+
+        const user = await User.findOne({email : decoded.email})
+        req.user = {
+            email : decoded.email,
+            user_id : user.id
+        }
+        res.locals.user = req.user;  
+        res.locals.authenticated = !req.user.anonymous;
 
         next()
 

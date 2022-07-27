@@ -4,7 +4,7 @@ var mongoose = require("mongoose")
 
 var jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
-var SF_Pag = require("../middlewares/Search_functionality-Pagination");
+var SF_Pag = require("../middleware/Search_functionality-pagination");
 
 var User = require("../models/user");
 var Shortcut = require("../models/shortcut")
@@ -23,8 +23,24 @@ router.post("/",checkAuth,async(req,res)=>{
     const email = req.user.email;
 
     const user = await User.findOne({email : email})
-    
     console.log("26 shorts cuts user", user.id)
+
+    var arr = Shortcut.find({user_id : user.id})
+    var sl_array = (await arr).map(x=>x.short_link)
+    
+    if(sl_array.includes(short_link))
+    {
+        return res.status(400).json({
+            "status" : {
+                "success" : false,
+                "code" : 400,
+                "message" : "cannot create shortlink"
+
+            }
+        })
+    }
+
+
 
     const new_shortcut =  new Shortcut({
         _id : new mongoose.Types.ObjectId(),
@@ -52,7 +68,7 @@ router.post("/",checkAuth,async(req,res)=>{
     } 
 });
 
-const query = ["name", "email", "mobile_number", "college"];       //query params available for filtering
+const query = ["short_link", "description", "tags"];       //query params available for filtering
 
 router.get("/user",checkAuth,SF_Pag(Shortcut, query), async(req, res)=>{
     
@@ -70,7 +86,7 @@ router.get("/user",checkAuth,SF_Pag(Shortcut, query), async(req, res)=>{
                     "code": 200,
                     "message": constants.SUCCESSFUL
                 },
-                "data": shortcut_data
+                "data": res.Results
             });
         // }
 

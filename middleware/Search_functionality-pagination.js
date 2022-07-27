@@ -4,7 +4,6 @@ module.exports = function SearchFunctionality_Pagination (model, query, array) {
     return async (req, res, next) => {
 
         try {
-
             //Pagination :
             const page = parseInt(req.query.page);
             const limit = parseInt(req.query.limit);
@@ -55,7 +54,11 @@ module.exports = function SearchFunctionality_Pagination (model, query, array) {
                     });
                 }
             } else {
-                results.results = await model.find().populate(array).limit(limit).skip(startIndex).exec();
+                if (res.locals.authenticated) {
+                    var user_id =res.locals.user.user_id;
+                }
+    
+                results.results = await model.find({user_id : user_id}).populate(array).limit(limit).skip(startIndex).exec();
                 res.count = results.results.length;
                 res.Results = results;
                 next();

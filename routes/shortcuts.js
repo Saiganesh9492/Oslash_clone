@@ -39,7 +39,6 @@ router.post("/",Shortcut_validator(),checkAuth,async(req,res)=>{
     const email = req.user.email;
 
     const user = await User.findOne({email : email})
-    console.log("26 shorts cuts user", user.id)
 
     var arr = Shortcut.find({user_id : user.id})
     var sl_array = (await arr).map(x=>x.short_link)
@@ -177,8 +176,14 @@ router.delete("/:shortcut_id", checkAuth, async(req, res)=>{
 router.get("/search",checkAuth,async(req,res)=>{
     try {
         const {attribute,value} = req.body;
+        var result;
 
-    const result = await Shortcut.find({attribute : value})
+        if(attribute === "short_link")
+        result = await Shortcut.find({short_link : value})
+        else if(attribute === "description")
+        result = await Shortcut.find({description : value})
+        if(attribute === "url")
+        result = await Shortcut.find({url : value})
 
     if(result)
     {
